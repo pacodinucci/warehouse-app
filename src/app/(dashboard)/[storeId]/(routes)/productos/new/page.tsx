@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ScanBarcode } from "lucide-react";
+import { Barcode, ScanBarcode } from "lucide-react";
 import axios from "axios";
 import { toast } from "sonner";
 
@@ -22,6 +22,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import BarcodeScannerModal from "@/components/modals/barcode-modal";
 
 const formSchema = z.object({
   name: z.string().min(1),
@@ -36,6 +37,7 @@ const AddNewProductPage = () => {
   const params = useParams();
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
+  const [isReadingCodebar, setIsReadingCodebar] = useState<boolean>(false);
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -62,8 +64,19 @@ const AddNewProductPage = () => {
     }
   };
 
+  const handleBarcodeComplete = (code: string) => {
+    form.setValue("barCode", code, { shouldValidate: false });
+    form.clearErrors("barCode");
+    setIsReadingCodebar(false);
+  };
+
+  const handleCloseModal = () => {
+    setIsReadingCodebar(false);
+    form.clearErrors();
+  };
+
   return (
-    <div className="w-3/4 h-[70%] bg-white rounded-md shadow-md mb-6">
+    <div className="w-3/4 min-h-[70%] h-auto bg-white rounded-md shadow-md mb-6">
       <div className="flex justify-between items-center px-6 py-4">
         <Heading
           title="Agregar nuevo producto"
@@ -71,6 +84,7 @@ const AddNewProductPage = () => {
         />
       </div>
       <Separator />
+
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -94,7 +108,11 @@ const AddNewProductPage = () => {
                 </FormItem>
               )}
             />
-            <Button variant="codeBar" className="flex self-end w-1/2 gap-6">
+            <Button
+              variant="codeBar"
+              className="flex self-end w-1/2 gap-6"
+              onClick={() => setIsReadingCodebar(true)}
+            >
               Leer código de barras
               <ScanBarcode />
             </Button>
@@ -159,6 +177,11 @@ const AddNewProductPage = () => {
           </Button>
         </form>
       </Form>
+      <BarcodeScannerModal
+        isOpen={isReadingCodebar}
+        onClose={handleCloseModal}
+        onComplete={handleBarcodeComplete}
+      />
     </div>
   );
 };

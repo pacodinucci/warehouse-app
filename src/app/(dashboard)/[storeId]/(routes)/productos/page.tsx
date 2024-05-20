@@ -2,7 +2,6 @@ import { db } from "@/lib/db";
 import { ProductosClient } from "./components/client";
 import { ProductosColumn } from "./components/columns";
 import { format } from "date-fns";
-import { es } from "date-fns/locale";
 
 const ProductosPage = async () => {
   const productos = await db.product.findMany();

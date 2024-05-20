@@ -22,7 +22,7 @@ export const ProductosClient: React.FC<ProductosClientProps> = ({ data }) => {
   console.log(params);
 
   return (
-    <div>
+    <div className="h-auto">
       <div className="flex justify-between items-center px-6 py-4">
         <Heading
           title="Productos"
