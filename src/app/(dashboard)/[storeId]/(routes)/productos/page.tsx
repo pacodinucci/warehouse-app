@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import { ProductosClient } from "./components/client";
 import { ProductosColumn } from "./components/columns";
 import { format } from "date-fns";
+import { es } from "date-fns/locale";
 
 const ProductosPage = async () => {
   const productos = await db.product.findMany();
@@ -15,7 +16,7 @@ const ProductosPage = async () => {
     createdAt: format(item.createdAt, "MMMM do, yyyy"),
   }));
   return (
-    <div className="w-3/4 h-[70%] bg-white rounded-md shadow-md mb-12">
+    <div className="w-3/4 min-h-[70%] h-auto bg-white rounded-md shadow-md mb-6">
       <ProductosClient data={productosFormat} />
     </div>
   );

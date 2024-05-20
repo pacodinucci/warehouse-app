@@ -6,7 +6,7 @@ import { db } from "@/lib/db";
 const Navbar = async () => {
   const stores = await db.store.findMany();
   return (
-    <div className="mt-12 bg-white p-8 w-3/4 rounded-md shadow-md flex justify-between">
+    <div className="mt-6 bg-white p-8 w-3/4 rounded-md shadow-md flex justify-between">
       <StoreSwitcher items={stores} />
       <MainNav />
       <UserButton afterSignOutUrl="/" />

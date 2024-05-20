@@ -14,11 +14,11 @@ import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
 
-import { SectoresColumn } from "./columns";
+import { DepositoColumn } from "./columns";
 import { AlertModal } from "@/components/modals/alert-modal";
 
 interface CellActionProps {
-  data: SectoresColumn;
+  data: DepositoColumn;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
@@ -30,15 +30,15 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
   const onCopy = (id: string) => {
     navigator.clipboard.writeText(id);
-    toast.success("Sector ID copied to the clipboard.");
+    toast.success("Product ID copied to the clipboard.");
   };
 
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(`/api/${params.storeId}/products/${data.id}`);
+      await axios.delete(`/api/${params.storeId}/warehouse/${data.id}`);
       router.refresh();
-      toast.success("Sector eliminado.");
+      toast.success("Producto eliminado del deposito");
     } catch (error) {
       toast.error("Something went wrong while deleting this product.");
     } finally {

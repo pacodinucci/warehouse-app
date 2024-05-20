@@ -57,6 +57,7 @@ model Warehouse {
   storeId   String
   productId String
   sectionId String
+  quantity  Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   Store     Store    @relation(fields: [storeId], references: [id])

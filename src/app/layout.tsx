@@ -26,7 +26,7 @@ export default function RootLayout({
       <html lang="en">
         <body className={font.className}>
           <ModalProvider />
-          <Toaster />
+          <Toaster richColors />
           {children}
         </body>
       </html>

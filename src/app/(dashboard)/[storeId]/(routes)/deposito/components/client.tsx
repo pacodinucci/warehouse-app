@@ -3,38 +3,27 @@ import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { PlusIcon } from "lucide-react";
-import { ProductosColumn, columns } from "./columns";
+import { DepositoColumn, columns } from "./columns";
 import { useParams, useRouter } from "next/navigation";
 import { DataTable } from "@/components/ui/data-table";
 
-interface ProductosClientProps {
-  data: ProductosColumn[];
+interface DepositoClientProps {
+  data: DepositoColumn[];
 }
 
-export const ProductosClient: React.FC<ProductosClientProps> = ({ data }) => {
+export const DepositoClient: React.FC<DepositoClientProps> = ({ data }) => {
   const router = useRouter();
   const params = useParams();
-
-  const handleAddProductClick = () => {
-    router.push(`/${params.storeId}/productos/new`);
-  };
-
-  console.log(params);
-
   return (
     <div>
       <div className="flex justify-between items-center px-6 py-4">
         <Heading
-          title="Productos"
-          description="Listado de productos registrados"
+          title="Depósito"
+          description="Listado de productos registrados en este depósito"
         />
-        <Button
-          variant="default"
-          className="flex gap-4"
-          onClick={handleAddProductClick}
-        >
+        <Button variant="default" className="flex gap-4">
           <PlusIcon />
-          Agregar Producto
+          Agregar Producto al depósito
         </Button>
       </div>
       <Separator />
