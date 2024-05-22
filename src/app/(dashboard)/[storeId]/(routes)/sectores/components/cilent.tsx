@@ -14,11 +14,20 @@ interface SectoresClientProps {
 export const SectoresClient: React.FC<SectoresClientProps> = ({ data }) => {
   const router = useRouter();
   const params = useParams();
+
+  const handleAddSectorClick = () => {
+    router.push(`/${params.storeId}/sectores/new`);
+  };
+
   return (
     <div>
       <div className="flex justify-between items-center px-6 py-4">
         <Heading title="Sectores" description="Listado de sectores" />
-        <Button variant="default" className="flex gap-4">
+        <Button
+          variant="default"
+          className="flex gap-4"
+          onClick={handleAddSectorClick}
+        >
           <PlusIcon />
           Agregar Sector
         </Button>

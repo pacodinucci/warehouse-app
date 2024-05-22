@@ -9,6 +9,7 @@ const SectoresPage = async () => {
   const sectoresFormat: SectoresColumn[] = sectores.map((item) => ({
     id: item.id,
     name: item.name,
+    qrCode: item.qrCode,
     createdAt: format(item.createdAt, "MMMM do, yyyy"),
   }));
   return (

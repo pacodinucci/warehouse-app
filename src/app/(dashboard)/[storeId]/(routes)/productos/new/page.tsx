@@ -172,7 +172,7 @@ const AddNewProductPage = () => {
               )}
             />
           </div>
-          <Button className="w-1/4 flex self-end" type="submit">
+          <Button className="w-1/4" type="submit">
             Agregar producto
           </Button>
         </form>
@@ -181,6 +181,7 @@ const AddNewProductPage = () => {
         isOpen={isReadingCodebar}
         onClose={handleCloseModal}
         onComplete={handleBarcodeComplete}
+        type="barcode"
       />
     </div>
   );

@@ -10,12 +10,14 @@ interface BarcodeScannerModalProps {
   isOpen: boolean;
   onClose: () => void;
   onComplete: (code: string) => void;
+  type: "barcode" | "qr";
 }
 
 const BarcodeScannerModal: React.FC<BarcodeScannerModalProps> = ({
   isOpen,
   onClose,
   onComplete,
+  type,
 }) => {
   const webcamRef = useRef<Webcam>(null);
   const [barcode, setBarcode] = useState<string | null>(null);
@@ -36,9 +38,13 @@ const BarcodeScannerModal: React.FC<BarcodeScannerModalProps> = ({
           setError(null);
         } catch (err) {
           if (err instanceof NotFoundException) {
-            setError("No se encontró un código.");
+            setError("Escaneando...");
           } else {
-            setError("Error al escanear el código.");
+            setError(
+              type === "barcode"
+                ? "Error al escanear el código de barras."
+                : "Error al escanear el código QR."
+            );
           }
         }
       }
@@ -59,8 +65,10 @@ const BarcodeScannerModal: React.FC<BarcodeScannerModalProps> = ({
 
   return (
     <Modal
-      title="Escáner de Código de Barras"
-      description="Apunta la cámara al código de barras para escanear."
+      title={`Escáner de Código ${type === "barcode" ? "de Barras" : "QR"}`}
+      description={`Apunta la cámara al código ${
+        type === "barcode" ? "de barras" : "QR"
+      } para escanear.`}
       isOpen={isOpen}
       onClose={onClose}
     >

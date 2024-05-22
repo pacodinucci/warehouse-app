@@ -10,12 +10,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react";
+import { Copy, Edit, MoreHorizontal, Trash, QrCode } from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
 
 import { SectoresColumn } from "./columns";
 import { AlertModal } from "@/components/modals/alert-modal";
+import { QrModal } from "@/components/modals/qr-modal";
 
 interface CellActionProps {
   data: SectoresColumn;
@@ -27,6 +28,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [isQrModalOpen, setIsQrModalOpen] = useState(false);
 
   const onCopy = (id: string) => {
     navigator.clipboard.writeText(id);
@@ -55,6 +57,13 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
         onConfirm={onDelete}
         loading={loading}
       />
+      <QrModal
+        isOpen={isQrModalOpen}
+        onClose={() => setIsQrModalOpen(false)}
+        onConfirm={() => setIsQrModalOpen(false)}
+        loading={loading}
+        qrCodeUrl={data.qrCode}
+      />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
@@ -64,10 +73,10 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Opciones</DropdownMenuLabel>
-          {/* <DropdownMenuItem onClick={() => onCopy(data.id)}>
-            <Copy className="mr-2 h-4 w-4" />
-            Copy ID
-          </DropdownMenuItem> */}
+          <DropdownMenuItem onClick={() => setIsQrModalOpen(true)}>
+            <QrCode className="mr-2 h-4 w-4" />
+            Ver QR
+          </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() =>
               router.push(`/${params.storeId}/products/${data.id}`)
