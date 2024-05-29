@@ -2,7 +2,6 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 import { db } from "@/lib/db";
-import { Barcode } from "lucide-react";
 
 // export async function POST(
 //   req: Request,
@@ -107,6 +106,7 @@ export async function POST(
         },
         data: {
           quantity: existingRecord.quantity + quantity,
+          isActive: true,
         },
       });
 

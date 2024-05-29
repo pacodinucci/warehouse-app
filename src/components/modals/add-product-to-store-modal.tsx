@@ -44,11 +44,6 @@ export const AddProductToStoreModal: React.FC<AddProductToStoreModalProps> = ({
     setIsMounted(true);
   }, []);
 
-  // useEffect(() => {
-  //   const interval = setInterval(handleScan, 1000);
-  //   return () => clearInterval(interval);
-  // }, []);
-
   useEffect(() => {
     const interval = setInterval(
       isScanningQr ? handleScanQr : handleScan,

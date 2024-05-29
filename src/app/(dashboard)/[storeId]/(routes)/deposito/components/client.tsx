@@ -10,6 +10,7 @@ import { DepositoColumn, columns } from "./columns";
 import { useParams, useRouter } from "next/navigation";
 import { DataTable } from "@/components/ui/data-table";
 import AddProductToStoreModal from "@/components/modals/add-product-to-store-modal";
+import { RemoveProductFromStoreModal } from "@/components/modals/remove-product-from-store-modal";
 import { toast } from "sonner";
 import { db } from "@/lib/db";
 
@@ -20,17 +21,23 @@ interface DepositoClientProps {
 export const DepositoClient: React.FC<DepositoClientProps> = ({ data }) => {
   const router = useRouter();
   const params = useParams();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isPlusHover, setIsPlusHover] = useState(false);
   const [isMinusHover, setIsMinusHover] = useState(false);
 
   const handleAddProductClick = () => {
-    setIsModalOpen(true);
+    setIsAddModalOpen(true);
+  };
+
+  const handleRemoveProductClick = () => {
+    setIsRemoveModalOpen(true);
   };
 
   const handleCloseModal = () => {
-    setIsModalOpen(false);
+    setIsAddModalOpen(false);
+    setIsRemoveModalOpen(false);
   };
 
   const handleConfirm = async (data: {
@@ -47,6 +54,24 @@ export const DepositoClient: React.FC<DepositoClientProps> = ({ data }) => {
     } catch (error) {
       console.error("Error al cargar el producto en el deposito", error);
       toast.error("No se pudo agregar el producto al depósito.");
+    }
+  };
+
+  const handleConfirmRemove = async (data: {
+    name: string | null;
+    warehouseId: string;
+    quantity: number;
+  }) => {
+    try {
+      await axios.patch(
+        `/api/stores/${params.storeId}/warehouse/${data.warehouseId}`,
+        data
+      );
+      toast.success("Producto retirado del depósito con éxito.");
+      router.refresh();
+    } catch (error) {
+      console.error("Error al retirar el producto del deposito", error);
+      toast.error("No se pudo retirar el producto del depósito.");
     }
   };
 
@@ -77,7 +102,7 @@ export const DepositoClient: React.FC<DepositoClientProps> = ({ data }) => {
           <Button
             variant="hovered"
             className="flex items-center gap-2 h-10 min-w-10 bg-rose-800 hover:w-48 transition-all duration-300 ease-out p-0 overflow-hidden"
-            onClick={handleAddProductClick}
+            onClick={handleRemoveProductClick}
             onMouseEnter={() => setIsMinusHover(true)}
             onMouseLeave={() => setIsMinusHover(false)}
           >
@@ -97,9 +122,15 @@ export const DepositoClient: React.FC<DepositoClientProps> = ({ data }) => {
         <DataTable columns={columns} data={data} searchKey="description" />
       </div>
       <AddProductToStoreModal
-        isOpen={isModalOpen}
+        isOpen={isAddModalOpen}
         onClose={handleCloseModal}
         onConfirm={handleConfirm}
+        loading={false}
+      />
+      <RemoveProductFromStoreModal
+        isOpen={isRemoveModalOpen}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmRemove}
         loading={false}
       />
     </div>

@@ -30,12 +30,14 @@ interface DataTableProps<TData, TValue> {
   searchKey: string;
 }
 
-export function DataTable<TData, TValue>({
+export function GlobalDataTable<TData, TValue>({
   columns,
   data,
   searchKey,
 }: DataTableProps<TData, TValue>) {
-  const [globalFilter, setGlobalFilter] = useState<string>("");
+  //   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+
+  const [filtering, setFiltering] = useState("");
 
   const table = useReactTable({
     data,
@@ -45,18 +47,27 @@ export function DataTable<TData, TValue>({
     // onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     state: {
-      globalFilter,
+      //   columnFilters,
+      globalFilter: filtering,
     },
-    onGlobalFilterChange: setGlobalFilter,
+    onGlobalFilterChange: setFiltering,
   });
 
   return (
     <div>
       <div className="flex items-center py-4">
+        {/* <Input
+          placeholder="Search..."
+          value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn(searchKey)?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm"
+        /> */}
         <Input
           placeholder="Search..."
-          value={globalFilter}
-          onChange={(event) => setGlobalFilter(event.target.value)}
+          value={filtering}
+          onChange={(event) => setFiltering(event.target.value)}
           className="max-w-sm"
         />
       </div>

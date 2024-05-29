@@ -6,6 +6,7 @@ import { PlusIcon } from "lucide-react";
 import { ProductosColumn, columns } from "./columns";
 import { useParams, useRouter } from "next/navigation";
 import { DataTable } from "@/components/ui/data-table";
+import { GlobalDataTable } from "@/components/ui/global-filter";
 
 interface ProductosClientProps {
   data: ProductosColumn[];
@@ -40,6 +41,7 @@ export const ProductosClient: React.FC<ProductosClientProps> = ({ data }) => {
       <Separator />
       <div className="px-4">
         <DataTable columns={columns} data={data} searchKey="description" />
+        {/* <GlobalDataTable columns={columns} data={data} searchKey="sku" /> */}
       </div>
     </div>
   );

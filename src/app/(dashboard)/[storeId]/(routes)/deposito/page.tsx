@@ -5,6 +5,9 @@ import { format } from "date-fns";
 
 const DepositoPage = async () => {
   const depositos = await db.warehouse.findMany({
+    where: {
+      isActive: true,
+    },
     include: {
       Product: true,
       Section: true,
