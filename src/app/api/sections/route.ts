@@ -8,7 +8,7 @@ export async function POST(req: Request) {
     const { userId } = auth();
     const body = await req.json();
 
-    const { name, qrCode } = body;
+    const { name, qrCode, storeId } = body;
 
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 401 });
@@ -26,6 +26,7 @@ export async function POST(req: Request) {
       data: {
         name,
         qrCode,
+        storeId,
       },
     });
 

@@ -8,7 +8,7 @@ const ProductosPage = async () => {
 
   const productosFormat: ProductosColumn[] = productos.map((item) => ({
     id: item.id,
-    name: item.name,
+    sku: item.sku,
     brand: item.brand,
     description: item.description,
     code: item.code,

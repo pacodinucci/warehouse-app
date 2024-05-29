@@ -35,7 +35,7 @@ model Store {
 
 model Product {
   id          String      @id @default(cuid())
-  name        String
+  sku         String
   brand       String
   description String
   code        String      @unique
@@ -47,10 +47,14 @@ model Product {
 model Section {
   id        String      @id @default(cuid())
   name      String      @unique
+  storeId   String
   qrCode    String
   createdAt DateTime    @default(now())
   udpatedAt DateTime    @updatedAt
+  // Store     Store    @relation(fields: [storeId], references: [id])
   Warehouse Warehouse[]
+
+  @@index([storeId])
 }
 
 model Warehouse {

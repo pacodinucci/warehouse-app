@@ -1,7 +1,6 @@
 import { db } from "@/lib/db";
 import { DepositoClient } from "./components/client";
 import { DepositoColumn } from "./components/columns";
-import { AddProductToStoreModal } from "@/components/modals/add-product-to-store-modal";
 import { format } from "date-fns";
 
 const DepositoPage = async () => {
@@ -14,8 +13,9 @@ const DepositoPage = async () => {
 
   const depositoFormat: DepositoColumn[] = depositos.map((item) => ({
     id: item.id,
-    name: item.Product.name,
+    sku: item.Product.sku,
     brand: item.Product.brand,
+    description: item.Product.description,
     quantity: item.quantity,
     section: item.Section.name,
     createdAt: format(item.createdAt, "MMMM do, yyyy"),

@@ -29,6 +29,7 @@ import { uploadToCloudinary } from "@/lib/uploadToCloudinary";
 const formSchema = z.object({
   name: z.string().min(1),
   qrCode: z.string().min(1),
+  storeId: z.string(),
 });
 
 type SectionFormValues = z.infer<typeof formSchema>;
@@ -46,6 +47,7 @@ const AddNewSectionPage = () => {
     defaultValues: {
       name: "",
       qrCode: "",
+      storeId: "",
     },
   });
 
@@ -61,13 +63,19 @@ const AddNewSectionPage = () => {
         data.qrCode = imageUrl;
       }
 
+      // Agregar storeId a data
+      const storeId = Array.isArray(params.storeId)
+        ? params.storeId[0]
+        : params.storeId;
+      data.storeId = storeId;
+
       // Enviar datos a la API
       await axios.post(`/api/sections`, data);
       router.refresh();
       router.push(`/${params.storeId}/sectores`);
       toast.success("Sector creado!");
     } catch (error) {
-      toast.error("El producto no se pudo crear.");
+      toast.error("El sector no se pudo crear.");
     } finally {
       setLoading(false);
     }
@@ -161,13 +169,6 @@ const AddNewSectionPage = () => {
           <Button className="w-1/4" type="submit" disabled={!qrCodeUrl}>
             Agregar sector
           </Button>
-          {/* <Button
-            className="w-1/4"
-            variant="outline"
-            onClick={(event) => handleUploadImage(event)}
-          >
-            Cloudinary
-          </Button> */}
         </form>
       </Form>
     </div>

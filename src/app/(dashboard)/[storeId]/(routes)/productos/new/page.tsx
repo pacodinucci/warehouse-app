@@ -25,7 +25,7 @@ import { Input } from "@/components/ui/input";
 import BarcodeScannerModal from "@/components/modals/barcode-modal";
 
 const formSchema = z.object({
-  name: z.string().min(1),
+  sku: z.string().min(1),
   brand: z.string().min(1),
   description: z.string().min(1),
   barCode: z.string().min(1),
@@ -41,7 +41,7 @@ const AddNewProductPage = () => {
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
+      sku: "",
       brand: "",
       description: "",
       barCode: "",
@@ -120,14 +120,14 @@ const AddNewProductPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormField
               control={form.control}
-              name="name"
+              name="sku"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>Nombre del producto</FormLabel>
+                  <FormLabel>SKU</FormLabel>
                   <FormControl>
                     <Input
                       disabled={loading}
-                      placeholder="Escribe el nombre del producto..."
+                      placeholder="Escribe el número SKU..."
                       {...field}
                     />
                   </FormControl>

@@ -8,14 +8,14 @@ export async function POST(req: Request) {
     const { userId } = auth();
     const body = await req.json();
 
-    const { name, brand, description, barCode } = body;
+    const { sku, brand, description, barCode } = body;
 
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 401 });
     }
 
-    if (!name) {
-      return new NextResponse("Name is required", { status: 400 });
+    if (!sku) {
+      return new NextResponse("SKU is required", { status: 400 });
     }
 
     if (!brand) {
@@ -32,7 +32,7 @@ export async function POST(req: Request) {
 
     const product = await db.product.create({
       data: {
-        name,
+        sku,
         brand,
         description,
         code: barCode,

@@ -5,7 +5,7 @@ import { CellAction } from "./cell-action";
 
 export type DepositoColumn = {
   id: string;
-  name: string;
+  sku: string;
   brand: string;
   section: string;
   quantity: number;
@@ -14,7 +14,7 @@ export type DepositoColumn = {
 
 export const columns: ColumnDef<DepositoColumn>[] = [
   {
-    accessorKey: "name",
+    accessorKey: "description",
     header: "Producto",
   },
   {

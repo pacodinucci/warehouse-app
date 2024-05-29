@@ -19,6 +19,9 @@ const buttonVariants = cva(
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
         codeBar: "bg-blue-700 text-white hover:bg-blue-700/80",
+        hovered:
+          "bg-primary text-primary-foreground flex gap-4 h-10 w-10 hover:w-50 transition-all duration-300 ease-in-out",
+        manualEntry: "border-input",
       },
       size: {
         default: "h-10 px-4 py-2",
