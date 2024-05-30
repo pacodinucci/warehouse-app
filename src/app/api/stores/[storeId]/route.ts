@@ -8,12 +8,36 @@ export async function POST(
   { params }: { params: { storeId: string } }
 ) {
   const body = await req.json();
-  const { barCode, qrCode, quantity } = body;
+  const { code, qrCode, quantity } = body;
+
+  if (!code.barCode && !code.sku) {
+    return new NextResponse(
+      JSON.stringify({ message: "Product code is required." }),
+      { status: 400 }
+    );
+  }
+
+  if (!qrCode) {
+    return new NextResponse(
+      JSON.stringify({ message: "QR Code is required." }),
+      { status: 400 }
+    );
+  }
+
+  if (!quantity) {
+    return new NextResponse(
+      JSON.stringify({ message: "Quantity is required." }),
+      { status: 400 }
+    );
+  }
 
   try {
-    const product = await db.product.findUnique({
+    const product = await db.product.findFirst({
       where: {
-        code: barCode,
+        OR: [
+          { code: code.barCode ?? undefined },
+          { sku: code.sku ?? undefined },
+        ],
       },
     });
 

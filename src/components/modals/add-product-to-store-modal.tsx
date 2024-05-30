@@ -4,19 +4,29 @@ import { useEffect, useRef, useState } from "react";
 import Webcam from "react-webcam";
 import { BrowserMultiFormatReader, NotFoundException } from "@zxing/library";
 import axios from "axios";
+import { QrCode } from "lucide-react";
 
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
+import { useParams } from "next/navigation";
 
 interface AddProductToStoreModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: (data: {
-    barCode: string | null;
-    qrCode: string;
+    code: {
+      barCode: string | null;
+      sku: string | null;
+    };
+    qrCode: string | null;
     quantity: number;
   }) => void;
   loading: boolean;
+}
+
+interface FetchProductParams {
+  barCode: string | null;
+  sku: string | null;
 }
 
 export const AddProductToStoreModal: React.FC<AddProductToStoreModalProps> = ({
@@ -25,23 +35,30 @@ export const AddProductToStoreModal: React.FC<AddProductToStoreModalProps> = ({
   onConfirm,
   loading,
 }) => {
+  const params = useParams();
   const [isMounted, setIsMounted] = useState(false);
   const [barCode, setBarCode] = useState<string | null>(null);
   const [sku, setSku] = useState<string | null>(null);
   const [product, setProduct] = useState<any | null>(null);
   const [quantity, setQuantity] = useState<number>(1);
   const [qrCode, setQrCode] = useState<string | null>(null);
+  const [qrMode, setQrMode] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isScanningQr, setIsScanningQr] = useState(false);
   const [isManualEntry, setIsManualEntry] = useState(false);
   const [isCodebarManual, setIsCodebarManual] = useState(true);
   const [isSkuManual, setIsSkuManual] = useState(false);
   const [showProductDescription, setShowProductDescription] = useState(false);
+  const [sectorQuery, setSectorQuery] = useState<string>("");
+  const [sectorResults, setSectorResults] = useState<any[]>([]);
+  const [selectedSector, setSelectedSector] = useState<string | null>(null);
+  const [allSectors, setAllSectors] = useState<any[]>([]);
   const webcamRef = useRef<Webcam>(null);
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     setIsMounted(true);
+    fetchAllSectors();
   }, []);
 
   useEffect(() => {
@@ -64,7 +81,7 @@ export const AddProductToStoreModal: React.FC<AddProductToStoreModalProps> = ({
           );
           setBarCode(result.getText());
           setIsLoading(true);
-          fetchProduct(result.getText());
+          fetchProduct({ barCode: result.getText(), sku: null });
           clearInterval(intervalId!);
         } catch (err) {
           if (err instanceof NotFoundException) {
@@ -89,7 +106,11 @@ export const AddProductToStoreModal: React.FC<AddProductToStoreModalProps> = ({
           );
           setQrCode(result.getText());
           clearInterval(intervalId!);
-          onConfirm({ barCode, qrCode: result.getText(), quantity });
+          onConfirm({
+            code: { barCode, sku },
+            qrCode: result.getText(),
+            quantity,
+          });
           handleClose();
         } catch (err) {
           if (err instanceof NotFoundException) {
@@ -102,9 +123,18 @@ export const AddProductToStoreModal: React.FC<AddProductToStoreModalProps> = ({
     }
   };
 
-  const fetchProduct = async (barCode: string) => {
+  const fetchProduct = async ({ barCode, sku }: FetchProductParams) => {
     try {
-      const response = await axios.get(`/api/products/${barCode}`);
+      let url = "";
+
+      if (barCode) {
+        url = `/api/products/${barCode}`;
+      } else if (sku) {
+        url = `/api/products?sku=${sku}`;
+      } else {
+        throw new Error("Either barCode or sku must be provided");
+      }
+      const response = await axios.get(url);
       setProduct(response.data);
       console.log(response.data);
     } catch (error) {
@@ -118,13 +148,46 @@ export const AddProductToStoreModal: React.FC<AddProductToStoreModalProps> = ({
     console.log(barCode);
     setIsLoading(true);
     if (barCode) {
-      fetchProduct(barCode);
+      fetchProduct({ barCode, sku: null });
     }
     setShowProductDescription(true);
   };
 
   const onSkuClick = () => {
-    console.log("click sku");
+    console.log(sku);
+    setIsLoading(true);
+    if (sku) {
+      fetchProduct({ barCode: null, sku });
+    }
+    setShowProductDescription(true);
+  };
+
+  const fetchAllSectors = async () => {
+    try {
+      const response = await axios.get(`/api/sections/${params.storeId}`);
+      setAllSectors(response.data);
+    } catch (error) {
+      console.error("Error al cargar los sectores:", error);
+    }
+  };
+
+  const handleSectorQueryChange = (query: string) => {
+    setSectorQuery(query);
+    if (query.length) {
+      const filteredSectors = allSectors.filter((sector) =>
+        sector.name.toLowerCase().includes(query.toLowerCase())
+      );
+      setSectorResults(filteredSectors);
+    } else {
+      setSectorResults([]);
+    }
+  };
+
+  const handleSectorSelect = (sector: any) => {
+    setSelectedSector(sector.name);
+    setQrCode(sector.name);
+    setSectorQuery(sector.name);
+    setSectorResults([]);
   };
 
   const handleClose = () => {
@@ -138,6 +201,8 @@ export const AddProductToStoreModal: React.FC<AddProductToStoreModalProps> = ({
     setIsSkuManual(false);
     setProduct(null);
     setShowProductDescription(false);
+    setQrMode(false);
+    setSectorResults([]);
     onClose();
   };
 
@@ -188,15 +253,73 @@ export const AddProductToStoreModal: React.FC<AddProductToStoreModalProps> = ({
                   ) : product ? (
                     isScanningQr ? (
                       <div className="my-4">
-                        <p>Escanea el código QR del sector.</p>
-                        <Webcam
-                          audio={false}
-                          ref={webcamRef}
-                          screenshotFormat="image/jpeg"
-                          videoConstraints={{
-                            facingMode: { ideal: "environment" },
-                          }}
-                        />
+                        <div>
+                          <label htmlFor="sectionName">
+                            Ingrese el nombre del sector
+                          </label>
+                          <div className="flex gap-2 items-center">
+                            <input
+                              type="text"
+                              value={sectorQuery}
+                              onChange={(e) =>
+                                handleSectorQueryChange(e.target.value)
+                              }
+                              className="relative mt-1 p-2 block w-full rounded-md border-2 border-gray-500 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                            />
+                            <Button
+                              className="h-10"
+                              onClick={() => {
+                                console.log({ barCode, qrCode, quantity });
+                                onConfirm({
+                                  code: { barCode, sku },
+                                  qrCode,
+                                  quantity,
+                                });
+                                handleClose();
+                              }}
+                            >
+                              Guardar
+                            </Button>
+                          </div>
+                          {sectorResults.length > 0 && (
+                            <ul className="absolute top-46 left-7 z-10 mt-2 bg-slate-50 border border-gray-300 rounded-md w-[90%] max-h-40 overflow-y-auto">
+                              {sectorResults.map((sector) => (
+                                <li
+                                  key={sector.id}
+                                  className="p-2 hover:bg-gray-300 cursor-pointer"
+                                  onClick={() => handleSectorSelect(sector)}
+                                >
+                                  {sector.name}
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                        {!qrMode && (
+                          <Button
+                            variant="default"
+                            className="w-full mt-4 flex gap-6 bg-blue-500"
+                            onClick={() => setQrMode(true)}
+                          >
+                            Escanear código QR
+                            <QrCode />
+                          </Button>
+                        )}
+                        {qrMode && (
+                          <>
+                            <p className="mt-6">
+                              Escanea el código QR del sector.
+                            </p>
+                            <Webcam
+                              audio={false}
+                              ref={webcamRef}
+                              screenshotFormat="image/jpeg"
+                              videoConstraints={{
+                                facingMode: { ideal: "environment" },
+                              }}
+                            />
+                          </>
+                        )}
                       </div>
                     ) : (
                       <div className="w-full">
@@ -268,8 +391,7 @@ export const AddProductToStoreModal: React.FC<AddProductToStoreModalProps> = ({
                       <input
                         type="text"
                         name="sku"
-                        // value={barCode}
-                        onChange={(e) => setBarCode(e.target.value)}
+                        onChange={(e) => setSku(e.target.value)}
                         className="mt-1 p-2 block w-3/4 rounded-md border-2 border-gray-500 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-center"
                         min={1}
                       />
@@ -331,15 +453,73 @@ export const AddProductToStoreModal: React.FC<AddProductToStoreModalProps> = ({
                 ) : product ? (
                   isScanningQr ? (
                     <div className="my-4">
-                      <p>Escanea el código QR del sector.</p>
-                      <Webcam
-                        audio={false}
-                        ref={webcamRef}
-                        screenshotFormat="image/jpeg"
-                        videoConstraints={{
-                          facingMode: { ideal: "environment" },
-                        }}
-                      />
+                      <div>
+                        <label htmlFor="sectionName">
+                          Ingrese el nombre del sector
+                        </label>
+                        <div className="flex gap-2 items-center">
+                          <input
+                            type="text"
+                            value={sectorQuery}
+                            onChange={(e) =>
+                              handleSectorQueryChange(e.target.value)
+                            }
+                            className="relative mt-1 p-2 block w-full rounded-md border-2 border-gray-500 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                          />
+                          <Button
+                            className="h-10"
+                            onClick={() => {
+                              console.log({ barCode, qrCode, quantity });
+                              onConfirm({
+                                code: { barCode, sku },
+                                qrCode,
+                                quantity,
+                              });
+                              handleClose();
+                            }}
+                          >
+                            Guardar
+                          </Button>
+                        </div>
+                        {sectorResults.length > 0 && (
+                          <ul className="absolute top-46 left-7 z-10 mt-2 bg-slate-50 border border-gray-300 rounded-md w-[90%] max-h-40 overflow-y-auto">
+                            {sectorResults.map((sector) => (
+                              <li
+                                key={sector.id}
+                                className="p-2 hover:bg-gray-300 cursor-pointer"
+                                onClick={() => handleSectorSelect(sector)}
+                              >
+                                {sector.name}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                      {!qrMode && (
+                        <Button
+                          variant="default"
+                          className="w-full mt-4 flex gap-6 bg-blue-500"
+                          onClick={() => setQrMode(true)}
+                        >
+                          Escanear código QR
+                          <QrCode />
+                        </Button>
+                      )}
+                      {qrMode && (
+                        <>
+                          <p className="mt-6">
+                            Escanea el código QR del sector.
+                          </p>
+                          <Webcam
+                            audio={false}
+                            ref={webcamRef}
+                            screenshotFormat="image/jpeg"
+                            videoConstraints={{
+                              facingMode: { ideal: "environment" },
+                            }}
+                          />
+                        </>
+                      )}
                     </div>
                   ) : (
                     <div className="w-full">
@@ -391,5 +571,3 @@ export const AddProductToStoreModal: React.FC<AddProductToStoreModalProps> = ({
     </Modal>
   );
 };
-
-export default AddProductToStoreModal;

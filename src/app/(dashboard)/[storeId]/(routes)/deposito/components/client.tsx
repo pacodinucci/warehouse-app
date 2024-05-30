@@ -9,7 +9,7 @@ import { PlusIcon, MinusIcon } from "lucide-react";
 import { DepositoColumn, columns } from "./columns";
 import { useParams, useRouter } from "next/navigation";
 import { DataTable } from "@/components/ui/data-table";
-import AddProductToStoreModal from "@/components/modals/add-product-to-store-modal";
+import { AddProductToStoreModal } from "@/components/modals/add-product-to-store-modal";
 import { RemoveProductFromStoreModal } from "@/components/modals/remove-product-from-store-modal";
 import { toast } from "sonner";
 import { db } from "@/lib/db";
@@ -56,8 +56,11 @@ export const DepositoClient: React.FC<DepositoClientProps> = ({ data }) => {
   };
 
   const handleConfirm = async (data: {
-    barCode: string | null;
-    qrCode: string;
+    code: {
+      barCode: string | null;
+      sku: string | null;
+    };
+    qrCode: string | null;
     quantity: number;
   }) => {
     console.log("Data confirmed:", data);

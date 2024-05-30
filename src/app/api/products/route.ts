@@ -45,3 +45,29 @@ export async function POST(req: Request) {
     return new NextResponse("Internal error", { status: 500 });
   }
 }
+
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const sku = searchParams.get("sku");
+
+  if (!sku) {
+    return new NextResponse("SKU is required", { status: 400 });
+  }
+
+  try {
+    const product = await db.product.findFirst({
+      where: {
+        sku: sku,
+      },
+    });
+
+    if (!product) {
+      return new NextResponse("Product not found", { status: 404 });
+    }
+
+    return NextResponse.json(product);
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    return new NextResponse("Internal Server Error", { status: 500 });
+  }
+}
