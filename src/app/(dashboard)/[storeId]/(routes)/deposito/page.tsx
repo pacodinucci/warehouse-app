@@ -25,7 +25,7 @@ const DepositoPage = async () => {
   }));
 
   return (
-    <div className="w-3/4 h-[75%] bg-white rounded-md shadow-md mb-6">
+    <div className="w-screen md:w-3/4 h-[82vh] md:h-[75%] bg-white md:rounded-md md:shadow-md">
       <DepositoClient data={depositoFormat} />
     </div>
   );

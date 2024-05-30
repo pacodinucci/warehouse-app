@@ -153,6 +153,7 @@ export const AddProductToStoreModal: React.FC<AddProductToStoreModalProps> = ({
       description="Sigue las instrucciones"
       isOpen={isOpen}
       onClose={handleClose}
+      className="h-[95vh] md:h-auto"
     >
       <div className="flex flex-col items-center">
         {isManualEntry ? (
@@ -192,6 +193,9 @@ export const AddProductToStoreModal: React.FC<AddProductToStoreModalProps> = ({
                           audio={false}
                           ref={webcamRef}
                           screenshotFormat="image/jpeg"
+                          videoConstraints={{
+                            facingMode: { ideal: "environment" },
+                          }}
                         />
                       </div>
                     ) : (
@@ -306,6 +310,9 @@ export const AddProductToStoreModal: React.FC<AddProductToStoreModalProps> = ({
                   audio={false}
                   ref={webcamRef}
                   screenshotFormat="image/jpeg"
+                  videoConstraints={{
+                    facingMode: { ideal: "environment" },
+                  }}
                 />
                 <div className="pt-6 pb-4 w-full flex justify-center">
                   <Button
@@ -329,6 +336,9 @@ export const AddProductToStoreModal: React.FC<AddProductToStoreModalProps> = ({
                         audio={false}
                         ref={webcamRef}
                         screenshotFormat="image/jpeg"
+                        videoConstraints={{
+                          facingMode: { ideal: "environment" },
+                        }}
                       />
                     </div>
                   ) : (

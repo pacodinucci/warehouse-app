@@ -11,7 +11,11 @@ const DashboardPage: React.FC<DashboardPageProps> = async ({ params }) => {
     },
   });
 
-  return <div>Esto es un dashboard de {store?.name}</div>;
+  return (
+    <div className="h-[82vh] md:h-full border-2 border-red-500">
+      Esto es un dashboard de {store?.name}
+    </div>
+  );
 };
 
 export default DashboardPage;

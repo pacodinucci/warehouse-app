@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 import { Button } from "@/components/ui/button";
@@ -26,6 +26,21 @@ export const DepositoClient: React.FC<DepositoClientProps> = ({ data }) => {
   const [loading, setLoading] = useState(false);
   const [isPlusHover, setIsPlusHover] = useState(false);
   const [isMinusHover, setIsMinusHover] = useState(false);
+  const [storeName, setStoreName] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchStoreName = async () => {
+      try {
+        const response = await axios(`/api/stores/${params.storeId}`);
+        const currentStore = await response.data;
+        setStoreName(currentStore.name);
+      } catch (error) {
+        console.error("Error fetching store name:", error);
+      }
+    };
+
+    fetchStoreName();
+  }, [params.storeId]);
 
   const handleAddProductClick = () => {
     setIsAddModalOpen(true);
@@ -77,43 +92,33 @@ export const DepositoClient: React.FC<DepositoClientProps> = ({ data }) => {
 
   return (
     <div>
-      <div className="flex justify-between items-center px-6 py-4">
+      <div className="flex flex-col md:flex-row justify-between items-center px-6 py-4">
         <Heading
           title="Depósito"
-          description="Listado de productos registrados en este depósito"
+          description={<>Listado de productos registrados en {storeName}</>}
         />
-        <div className="flex gap-2">
+        <div className="w-full flex justify-end gap-2 mt-2">
           <Button
-            variant="hovered"
-            className="flex items-center gap-2 h-10 min-w-10 bg-emerald-700 hover:w-48 transition-all duration-300 ease-out p-0 overflow-hidden"
+            variant="default"
+            className="flex justify-between items-center gap-2 h-10 min-w-10 bg-emerald-700"
             onClick={handleAddProductClick}
-            onMouseEnter={() => setIsPlusHover(true)}
-            onMouseLeave={() => setIsPlusHover(false)}
           >
-            {isPlusHover ? (
-              <>
-                <PlusIcon style={{ height: "24px", width: "24px" }} />
-                <span className="flex items-center">Agregar productos</span>
-              </>
-            ) : (
-              <PlusIcon style={{ height: "24px", width: "24px" }} />
-            )}
+            <PlusIcon style={{ height: "24px", width: "24px" }} />
+            <span className="hidden md:flex items-center">
+              Agregar productos
+            </span>
+            <span className="hidden items-center text-lg">Agregar</span>
           </Button>
           <Button
-            variant="hovered"
-            className="flex items-center gap-2 h-10 min-w-10 bg-rose-800 hover:w-48 transition-all duration-300 ease-out p-0 overflow-hidden"
+            variant="default"
+            className="flex justify-between items-center gap-2 h-10 min-w-10 bg-rose-800"
             onClick={handleRemoveProductClick}
-            onMouseEnter={() => setIsMinusHover(true)}
-            onMouseLeave={() => setIsMinusHover(false)}
           >
-            {isMinusHover ? (
-              <>
-                <MinusIcon style={{ height: "24px", width: "24px" }} />
-                <span className="flex items-center">Retirar productos</span>
-              </>
-            ) : (
-              <MinusIcon style={{ height: "24px", width: "24px" }} />
-            )}
+            <MinusIcon style={{ height: "24px", width: "24px" }} />
+            <span className="hidden md:flex items-center">
+              Retirar productos
+            </span>
+            <span className="hidden items-center text-lg">Retirar</span>
           </Button>
         </div>
       </div>

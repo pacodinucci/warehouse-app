@@ -28,7 +28,7 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="min-h-screen h-auto flex flex-col items-center space-y-6 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-200 to-green-800">
+    <div className="md:min-h-screen h-auto flex flex-col-reverse md:flex-col justify-between md:justify-normal items-center md:gap-6 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-200 to-green-800">
       <Navbar />
       {children}
     </div>

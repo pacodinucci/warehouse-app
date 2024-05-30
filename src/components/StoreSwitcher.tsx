@@ -69,19 +69,24 @@ export default function StoreSwitcher({
           role="combobox"
           aria-expanded={open}
           aria-label="Select a Store"
-          className={cn("w-[200px] justify-between", className)}
+          className={cn("justify-center md:justify-between", className)}
         >
-          <StoreIcon className="mr-2 h-4 w-4" />
-          {currentStore?.label}
-          <ChevronsUpDown className="ml-auto h-4 w-4 shrink-0 opacity-50" />
+          <div className="flex flex-col md:flex-row items-center gap-2">
+            <StoreIcon className="md:mr-2 md:h-4 md:w-4" />
+            <p className="hidden md:block">{currentStore?.label}</p>
+            <p className="block md:hidden">
+              {currentStore?.label.split(" ")[0]}
+            </p>
+          </div>
+          <ChevronsUpDown className="hidden md:block ml-auto h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className="w-screen h-[82.5vh] md:min-h-0 md:w-[200px] md:h-auto p-2 md:p-0 mb-6 md:mb-0 rounded-none md:rounded-md shadow-none md:shadow-md">
         <Command>
           <CommandList>
             <CommandInput placeholder="Buscar depósito..." />
             <CommandEmpty>No se encontraron depósitos.</CommandEmpty>
-            <CommandGroup heading="Stores">
+            <CommandGroup heading="Depósitos">
               {formattedItems.map((store) => (
                 <CommandItem
                   key={store.value}
