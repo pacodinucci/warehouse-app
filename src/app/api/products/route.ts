@@ -59,6 +59,13 @@ export async function GET(req: Request) {
       where: {
         sku: sku,
       },
+      include: {
+        Warehouse: {
+          include: {
+            Section: true,
+          },
+        },
+      },
     });
 
     if (!product) {

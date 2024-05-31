@@ -1,8 +1,9 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { Warehouse } from "lucide-react";
+import SectorSelector from "./sector-popover";
 
 interface ProductDescriptionProps {
   product: {
@@ -12,7 +13,7 @@ interface ProductDescriptionProps {
     Warehouse: Warehouse[];
   } | null;
   loading: boolean;
-  handleClose: () => void;
+  onClose: () => void;
   onConfirm: (data: {
     name: string;
     warehouseId: string;
@@ -37,22 +38,26 @@ interface Warehouse {
   };
 }
 
+interface SelectedSection {
+  name: string;
+  warehouseId: string;
+}
+
 export const ProductDescription: React.FC<ProductDescriptionProps> = ({
   product,
   loading,
-  handleClose,
+  onClose,
   onConfirm,
   barCode,
   quantity,
   setQuantity,
 }) => {
-  const [selectedSection, setSelectedSection] = useState<{
-    name: string;
-    warehouseId: string;
-  }>({
-    name: "",
-    warehouseId: "",
-  });
+  const [selectedSection, setSelectedSection] =
+    useState<SelectedSection | null>(null);
+
+  useEffect(() => {
+    console.log(product);
+  }, [product]);
 
   return (
     <div className="w-full">
@@ -61,12 +66,23 @@ export const ProductDescription: React.FC<ProductDescriptionProps> = ({
           <p className="text-slate-600 font-bold text-xl">{product?.brand}</p>
           <p className="text-lg">{product?.description}</p>
         </div>
-        <div className="flex justify-between">
+        <Separator />
+        <div className="flex flex-col gap-4 justify-between">
           <div>
-            <label htmlFor="sector" className="block text-lg text-gray-700">
+            <p className="text-lg font-semibold text-slate-600">
+              Selecciona sector y cantidad a retirar:
+            </p>
+          </div>
+          <div>
+            {/* <label htmlFor="sector" className="block text-lg text-gray-700">
               Sector
-            </label>
-            <div className="flex gap-6 items-center">
+            </label> */}
+            <SectorSelector
+              product={product}
+              selectedSection={selectedSection}
+              setSelectedSection={setSelectedSection}
+            />
+            {/* <div className="flex gap-6 items-center">
               {product?.Warehouse.length && product?.Warehouse.length > 1 ? (
                 product?.Warehouse.map((warehouse) => (
                   <div key={warehouse.id}>
@@ -92,9 +108,9 @@ export const ProductDescription: React.FC<ProductDescriptionProps> = ({
                   {product?.Warehouse[0].Section.name}
                 </p>
               )}
-            </div>
+            </div> */}
           </div>
-          <div>
+          <div className="flex gap-4 justify-between items-center">
             <label htmlFor="quantity" className="block text-lg text-gray-700">
               Cantidad
             </label>
@@ -104,24 +120,30 @@ export const ProductDescription: React.FC<ProductDescriptionProps> = ({
               name="quantity"
               value={quantity}
               onChange={(e) => setQuantity(Number(e.target.value))}
-              className="mt-1 block w-3/4 rounded-md border-gray-200 border py-1 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-center"
+              className="mt-1 block w-[180px] md:w-3/4 rounded-md border-gray-200 border py-1 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-center"
               min={1}
             />
           </div>
         </div>
       </div>
       <div className="flex justify-between w-full mt-12">
-        <Button onClick={handleClose} disabled={loading}>
+        <Button onClick={onClose} disabled={loading}>
           Volver
         </Button>
         <Button
-          onClick={() =>
-            onConfirm({
-              name: selectedSection.name,
-              warehouseId: selectedSection.warehouseId,
+          onClick={() => {
+            console.log({
+              name: selectedSection?.name,
+              warehouseId: selectedSection?.warehouseId,
               quantity: quantity,
-            })
-          }
+            });
+            onConfirm({
+              name: selectedSection?.name || "",
+              warehouseId: selectedSection?.warehouseId || "",
+              quantity: quantity,
+            });
+            onClose();
+          }}
           disabled={loading}
         >
           Confirmar

@@ -9,6 +9,7 @@ import { QrCode } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
 import { useParams } from "next/navigation";
+import { Separator } from "../ui/separator";
 
 interface AddProductToStoreModalProps {
   isOpen: boolean;
@@ -220,6 +221,7 @@ export const AddProductToStoreModal: React.FC<AddProductToStoreModalProps> = ({
       onClose={handleClose}
       className="h-[95vh] md:h-auto flex flex-col"
     >
+      <Separator />
       <div className="flex flex-col items-center mt-6 md:mt-0">
         {isManualEntry ? (
           <div className="my-4 w-full">

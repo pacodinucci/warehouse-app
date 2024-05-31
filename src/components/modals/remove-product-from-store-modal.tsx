@@ -22,16 +22,24 @@ interface RemoveProductFromStoreModalProps {
   loading: boolean;
 }
 
+interface FetchProductParams {
+  barCode: string | null;
+  sku: string | null;
+}
+
 export const RemoveProductFromStoreModal: React.FC<
   RemoveProductFromStoreModalProps
 > = ({ isOpen, onClose, onConfirm, loading }) => {
+  const webcamRef = useRef<Webcam>(null);
   const [isMounted, setIsMounted] = useState(false);
   const [barCode, setBarCode] = useState<string | null>(null);
+  const [sku, setSku] = useState<string | null>(null);
   const [quantity, setQuantity] = useState<number>(1);
   const [product, setProduct] = useState<any | null>(null);
   const [isManualEntry, setIsManualEntry] = useState(false);
-  const webcamRef = useRef<Webcam>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isCodebarManual, setIsCodebarManual] = useState(true);
+  const [isSkuManual, setIsSkuManual] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
@@ -54,7 +62,7 @@ export const RemoveProductFromStoreModal: React.FC<
           );
           setBarCode(result.getText());
           setIsLoading(true);
-          fetchProduct(result.getText());
+          fetchProduct({ barCode: result.getText(), sku: null });
         } catch (err) {
           if (err instanceof NotFoundException) {
             // No barcode found, continue scanning
@@ -66,9 +74,18 @@ export const RemoveProductFromStoreModal: React.FC<
     }
   };
 
-  const fetchProduct = async (barCode: string) => {
+  const fetchProduct = async ({ barCode, sku }: FetchProductParams) => {
     try {
-      const response = await axios.get(`/api/products/${barCode}`);
+      let url = "";
+
+      if (barCode) {
+        url = `/api/products/${barCode}`;
+      } else if (sku) {
+        url = `/api/products?sku=${sku}`;
+      } else {
+        throw new Error("Either barCode or sku must be provided");
+      }
+      const response = await axios.get(url);
       setProduct(response.data);
       console.log(response.data);
     } catch (error) {
@@ -91,6 +108,8 @@ export const RemoveProductFromStoreModal: React.FC<
     setBarCode(null);
     setProduct(null);
     setIsManualEntry(false);
+    setIsSkuManual(false);
+    setIsCodebarManual(true);
     onClose();
   };
 
@@ -104,45 +123,91 @@ export const RemoveProductFromStoreModal: React.FC<
       description="Sigue las instrucciones"
       isOpen={isOpen}
       onClose={handleClose}
+      className="h-[95vh] md:h-auto flex flex-col"
     >
       <Separator />
       <div>
         {isManualEntry ? (
           <div className="w-full h-full mt-6">
             {!product ? (
-              <div className="my-6 flex flex-col gap-2">
-                <label className="block text-sm font-medium text-gray-700">
-                  Código de barras
-                </label>
-                <input
-                  type="text"
-                  name="barCode"
-                  onChange={(e) => setBarCode(e.target.value)}
-                  className="mt-1 p-2 block w-3/4 rounded-md border-2 border-gray-500 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-center"
-                  min={1}
-                />
-                <div className="flex justify-between w-full mt-12">
+              <>
+                <div className="flex gap-4">
                   <Button
-                    onClick={() => setIsManualEntry(false)}
-                    disabled={loading}
+                    variant="manualEntry"
+                    className={`${
+                      isCodebarManual ? "bg-blue-600 text-white" : ""
+                    }`}
+                    onClick={() => {
+                      setIsCodebarManual(true);
+                      setIsSkuManual(false);
+                    }}
                   >
-                    Volver
+                    Código de barras
                   </Button>
                   <Button
+                    variant="manualEntry"
+                    className={`${isSkuManual ? "bg-blue-600 text-white" : ""}`}
                     onClick={() => {
-                      if (barCode) fetchProduct(barCode);
+                      setIsSkuManual(true);
+                      setIsCodebarManual(false);
                     }}
-                    disabled={loading}
                   >
-                    Confirmar
+                    Número SKU
                   </Button>
                 </div>
-              </div>
+                <div className="my-6 flex flex-col gap-2">
+                  {isCodebarManual && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Código de barras
+                      </label>
+                      <input
+                        type="text"
+                        name="barCode"
+                        onChange={(e) => setBarCode(e.target.value)}
+                        className="mt-1 p-2 block w-3/4 rounded-md border-2 border-gray-500 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-center"
+                        min={1}
+                      />
+                    </div>
+                  )}
+                  {isSkuManual && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Número SKU
+                      </label>
+                      <input
+                        type="text"
+                        name="sku"
+                        onChange={(e) => setSku(e.target.value)}
+                        className="mt-1 p-2 block w-3/4 rounded-md border-2 border-gray-500 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-center"
+                        min={1}
+                      />
+                    </div>
+                  )}
+                  <div className="flex justify-between w-full mt-12">
+                    <Button
+                      onClick={() => setIsManualEntry(false)}
+                      disabled={loading}
+                    >
+                      Volver
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        if (barCode) fetchProduct({ barCode, sku: null });
+                        else if (sku) fetchProduct({ barCode: null, sku });
+                      }}
+                      disabled={loading || (!barCode && !sku)}
+                    >
+                      Confirmar
+                    </Button>
+                  </div>
+                </div>
+              </>
             ) : (
               <ProductDescription
                 product={product}
                 loading={loading}
-                handleClose={onClose}
+                onClose={handleClose}
                 onConfirm={onConfirm}
                 barCode={barCode}
                 quantity={quantity}
@@ -180,8 +245,8 @@ export const RemoveProductFromStoreModal: React.FC<
                   <ProductDescription
                     product={product}
                     loading={loading}
-                    handleClose={onClose}
-                    onConfirm={() => {}}
+                    onClose={handleClose}
+                    onConfirm={onConfirm}
                     barCode={barCode}
                     quantity={quantity}
                     setQuantity={setQuantity}

@@ -54,7 +54,7 @@ export function DataTable<TData, TValue>({
     <div>
       <div className="flex items-center py-4">
         <Input
-          placeholder="Search..."
+          placeholder="Buscar..."
           value={globalFilter}
           onChange={(event) => setGlobalFilter(event.target.value)}
           className="max-w-sm"
@@ -118,7 +118,7 @@ export function DataTable<TData, TValue>({
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
         >
-          Previous
+          Anterior
         </Button>
         <Button
           variant="outline"
@@ -126,7 +126,7 @@ export function DataTable<TData, TValue>({
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
         >
-          Next
+          Siguiente
         </Button>
       </div>
     </div>
