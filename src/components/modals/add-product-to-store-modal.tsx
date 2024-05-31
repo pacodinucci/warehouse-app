@@ -218,9 +218,9 @@ export const AddProductToStoreModal: React.FC<AddProductToStoreModalProps> = ({
       description="Sigue las instrucciones"
       isOpen={isOpen}
       onClose={handleClose}
-      className="h-[95vh] md:h-auto"
+      className="h-[95vh] md:h-auto flex flex-col"
     >
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center mt-6 md:mt-0">
         {isManualEntry ? (
           <div className="my-4 w-full">
             <div className={`flex gap-4 ${showProductDescription && "hidden"}`}>

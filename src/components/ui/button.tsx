@@ -21,7 +21,7 @@ const buttonVariants = cva(
         codeBar: "bg-blue-700 text-white hover:bg-blue-700/80",
         hovered:
           "bg-primary text-primary-foreground flex gap-4 h-10 w-10 hover:w-48 transition-all duration-300 ease-out p-0 overflow-hidden",
-        manualEntry: "border-input",
+        manualEntry: "",
       },
       size: {
         default: "h-10 px-4 py-2",
