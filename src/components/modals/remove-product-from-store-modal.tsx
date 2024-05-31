@@ -110,6 +110,7 @@ export const RemoveProductFromStoreModal: React.FC<
     setIsManualEntry(false);
     setIsSkuManual(false);
     setIsCodebarManual(true);
+    setQuantity(1);
     onClose();
   };
 

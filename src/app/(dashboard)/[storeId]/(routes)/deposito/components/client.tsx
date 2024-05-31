@@ -24,8 +24,6 @@ export const DepositoClient: React.FC<DepositoClientProps> = ({ data }) => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [isPlusHover, setIsPlusHover] = useState(false);
-  const [isMinusHover, setIsMinusHover] = useState(false);
   const [storeName, setStoreName] = useState<string | null>(null);
 
   useEffect(() => {
