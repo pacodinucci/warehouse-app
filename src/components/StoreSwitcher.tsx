@@ -1,7 +1,7 @@
 "use client";
 
 import { Store } from "@prisma/client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   CheckIcon,
   ChevronsUpDown,
@@ -49,9 +49,18 @@ export default function StoreSwitcher({
     value: item.id,
   }));
 
-  const currentStore = formattedItems.find(
-    (item) => item.value === params.storeId
+  const [currentStore, setCurrentStore] = useState(() =>
+    formattedItems.find((item) => item.value === params.storeId)
   );
+
+  useEffect(() => {
+    const newCurrentStore = formattedItems.find(
+      (item) => item.value === params.storeId
+    );
+    if (currentStore?.value !== newCurrentStore?.value) {
+      setCurrentStore(newCurrentStore);
+    }
+  }, [params.storeId, formattedItems, currentStore?.value]);
 
   const [open, setOpen] = useState(false);
 

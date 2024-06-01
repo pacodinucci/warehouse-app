@@ -3,10 +3,12 @@
 import React, { useState } from "react";
 import * as XLSX from "xlsx";
 import { useDropzone } from "react-dropzone";
+import axios from "axios";
 
 import { Button } from "@/components/ui/button";
 import { Modal } from "../ui/modal";
 import { Separator } from "../ui/separator";
+import { toast } from "sonner";
 
 interface ProductData {
   sku: string;
@@ -69,12 +71,20 @@ export const ImportFileModal: React.FC<ImportFileModalProps> = ({
   const handleUpload = async (data: ProductData[]) => {
     setLoading(true);
     try {
-      console.log(data);
+      const transformedData = data.map((item) => ({
+        ...item,
+        sku: String(item.sku),
+        code: String(item.code),
+      }));
+      console.log(transformedData);
+      await axios.post("/api/products/bulk", transformedData);
+      toast.success("Los productos se agregaron a la base de datos.");
     } catch (error) {
       console.error("Error uploading data:", error);
+      toast.error("No se pudo agregar los productos.");
     } finally {
       setLoading(false);
-      // onClose();
+      onClose();
     }
   };
 
@@ -92,29 +102,18 @@ export const ImportFileModal: React.FC<ImportFileModalProps> = ({
       description="Importa o arrasta un archivo de xsls"
       isOpen={isOpen}
       onClose={onClose}
+      className="h-[95vh] md:h-auto flex flex-col"
     >
-      {/* <Separator />
-      <div className="flex flex-col items-center justify-center py-2">
-        <div className="relative flex justify-end w-full">
-          <input
-            type="file"
-            accept=".xlsx, .xls"
-            onChange={handleFileUpload}
-            className="absolute inset-0 opacity-0 cursor-pointer"
-          />
-          <Button className="cursor-pointer w-full">Seleccionar archivo</Button>
-        </div>
-      </div> */}
       <Separator />
-      <div className="flex flex-col items-center justify-center py-2">
+      <div className="flex flex-col items-center justify-center py-12 md:py-2">
         <div
           {...getRootProps()}
           className="flex flex-col gap-6 justify-center items-center border-2 border-dashed border-gray-400 rounded p-6 text-center cursor-pointer min-h-48 w-full"
         >
           <input {...getInputProps()} />
           <p>
-            Arrastra y suelta un archivo aquí, o haz clic para seleccionar un
-            archivo
+            Arrastra y suelta o selecciona un archivo .xlsx o .csv. Debe tener
+            como columnas sku, description, brand y code.
           </p>
           <Button className="cursor-pointer w-full">Seleccionar archivo</Button>
         </div>

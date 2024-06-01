@@ -13,11 +13,7 @@ export default async function SetupLayout({
     redirect("/sing-in");
   }
 
-  const store = await db.store.findFirst({
-    where: {
-      userId,
-    },
-  });
+  const store = await db.store.findFirst();
 
   if (store) {
     redirect(`/${store.id}`);

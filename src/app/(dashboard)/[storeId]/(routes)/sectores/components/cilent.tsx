@@ -21,16 +21,20 @@ export const SectoresClient: React.FC<SectoresClientProps> = ({ data }) => {
 
   return (
     <div>
-      <div className="flex justify-between items-center px-6 py-4">
-        <Heading title="Sectores" description="Listado de sectores" />
-        <Button
-          variant="default"
-          className="flex gap-4"
-          onClick={handleAddSectorClick}
-        >
-          <PlusIcon />
-          Agregar Sector
-        </Button>
+      <div className="flex flex-col md:flex-row justify-between items-center px-6 py-4">
+        <div className="self-start">
+          <Heading title="Sectores" description="Listado de sectores" />
+        </div>
+        <div className="self-end">
+          <Button
+            variant="default"
+            className="flex gap-4"
+            onClick={handleAddSectorClick}
+          >
+            <PlusIcon />
+            <span className="hidden md:flex items-center">Agregar sector</span>
+          </Button>
+        </div>
       </div>
       <Separator />
       <div className="px-4">

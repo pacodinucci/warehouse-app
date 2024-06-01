@@ -1,12 +1,17 @@
+import React from "react";
+import { format } from "date-fns";
+
 import { db } from "@/lib/db";
 import { DepositoClient } from "./components/client";
 import { DepositoColumn } from "./components/columns";
-import { format } from "date-fns";
 
-const DepositoPage = async () => {
+const DepositoPage = async ({ params }: { params: { storeId: string } }) => {
+  const { storeId } = params;
+  console.log(storeId);
   const depositos = await db.warehouse.findMany({
     where: {
       isActive: true,
+      storeId: storeId,
     },
     include: {
       Product: true,
@@ -25,7 +30,7 @@ const DepositoPage = async () => {
   }));
 
   return (
-    <div className="w-screen md:w-3/4 h-[82vh] md:h-[75%] bg-white md:rounded-md md:shadow-md">
+    <div className="w-screen md:w-3/4 h-auto md:h-[75%] min-h-screen md:min-h-0 bg-white md:rounded-md md:shadow-md mb-10">
       <DepositoClient data={depositoFormat} />
     </div>
   );

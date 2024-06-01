@@ -108,7 +108,6 @@ export const DepositoClient: React.FC<DepositoClientProps> = ({ data }) => {
             <span className="hidden md:flex items-center">
               Agregar productos
             </span>
-            <span className="hidden items-center text-lg">Agregar</span>
           </Button>
           <Button
             variant="default"
