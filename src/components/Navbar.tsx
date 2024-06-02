@@ -15,7 +15,7 @@ const Navbar: React.FC<NavbarProps> = async ({ className = "" }) => {
     >
       <StoreSwitcher
         items={stores}
-        className="w-[50px] md:w-[200px] border-0 md:border"
+        className="w-[50px] md:w-[200px] border-0 md:border text-neutral-800"
       />
       <MainNav />
       <div className="p-2 pt-0 flex items-start">

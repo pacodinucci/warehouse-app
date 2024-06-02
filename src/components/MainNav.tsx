@@ -18,19 +18,19 @@ export const MainNav = ({
       href: `/${params.storeId}/deposito`,
       label: "Depósito",
       icon: Warehouse,
-      active: pathname === `${params.storeId}/deposito`,
+      active: pathname === `/${params.storeId}/deposito`,
     },
     {
       href: `/${params.storeId}/productos`,
       label: "Productos",
       icon: Drill,
-      active: pathname === `${params.storeId}/productos`,
+      active: pathname === `/${params.storeId}/productos`,
     },
     {
       href: `/${params.storeId}/sectores`,
       label: "Sectores",
       icon: Box,
-      active: pathname === `${params.storeId}/sectores`,
+      active: pathname === `/${params.storeId}/sectores`,
     },
   ];
 
@@ -52,7 +52,14 @@ export const MainNav = ({
               : "text-muted-foreground"
           )}
         >
-          <route.icon className="md:hidden" />
+          <route.icon
+            className={cn(
+              "md:hidden",
+              route.active
+                ? "text-black dark:text-white"
+                : "text-muted-foreground"
+            )}
+          />
           {route.label}
         </Link>
       ))}

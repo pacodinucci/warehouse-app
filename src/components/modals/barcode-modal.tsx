@@ -5,6 +5,7 @@ import Webcam from "react-webcam";
 import { BrowserMultiFormatReader, NotFoundException } from "@zxing/library";
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
+import { Separator } from "../ui/separator";
 
 interface BarcodeScannerModalProps {
   isOpen: boolean;
@@ -71,7 +72,9 @@ const BarcodeScannerModal: React.FC<BarcodeScannerModalProps> = ({
       } para escanear.`}
       isOpen={isOpen}
       onClose={onClose}
+      className="h-screen md:h-auto flex flex-col"
     >
+      <Separator />
       <div className="p-4">
         <Webcam
           audio={false}
@@ -86,7 +89,7 @@ const BarcodeScannerModal: React.FC<BarcodeScannerModalProps> = ({
             <p>{error || "Escaneando..."}</p>
           )}
         </div>
-        <Button onClick={onClose} className="mt-4">
+        <Button onClick={onClose} className="mt-4 w-full md:w-auto">
           Cerrar
         </Button>
       </div>

@@ -86,7 +86,7 @@ const AddNewSectionPage = () => {
     const sectionName = form.getValues("name");
     setSectionName(sectionName);
     if (!sectionName) {
-      toast.error("Debe ingresar un nombre del nuevo sector.");
+      toast.error("Ingresar un nombre para el nuevo sector.");
       return;
     }
     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${sectionName}`;
@@ -115,7 +115,7 @@ const AddNewSectionPage = () => {
   };
 
   return (
-    <div className="w-3/4 min-h-[70%] h-auto bg-white rounded-md shadow-md mb-6">
+    <div className="w-full md:w-3/4 min-h-[70%] h-screen md:h-auto bg-white rounded-md shadow-md mb-6">
       <div className="flex justify-between items-center px-6 py-4">
         <Heading
           title="Agregar nuevo sector"
@@ -149,7 +149,7 @@ const AddNewSectionPage = () => {
             />
             <Button
               variant="codeBar"
-              className="flex self-end w-1/2 gap-6"
+              className="flex self-end md:w-1/2 gap-6"
               onClick={handleGenerateQr}
             >
               Generar código QR
@@ -166,7 +166,7 @@ const AddNewSectionPage = () => {
               <canvas ref={canvasRef} width={200} height={200} />
             </div>
           )}
-          <Button className="w-1/4" type="submit" disabled={!qrCodeUrl}>
+          <Button className="md:w-1/4" type="submit" disabled={!qrCodeUrl}>
             Agregar sector
           </Button>
         </form>

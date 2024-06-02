@@ -76,7 +76,7 @@ const AddNewProductPage = () => {
   };
 
   return (
-    <div className="w-3/4 min-h-[70%] h-auto bg-white rounded-md shadow-md mb-6">
+    <div className="w-full md:w-3/4 min-h-[70%] h-screen md:h-auto bg-white rounded-md shadow-md mb-6">
       <div className="flex justify-between items-center px-6 py-4">
         <Heading
           title="Agregar nuevo producto"
@@ -110,7 +110,7 @@ const AddNewProductPage = () => {
             />
             <Button
               variant="codeBar"
-              className="flex self-end w-1/2 gap-6"
+              className="flex self-end md:w-1/2 gap-6"
               onClick={() => setIsReadingCodebar(true)}
             >
               Leer código de barras
@@ -172,7 +172,7 @@ const AddNewProductPage = () => {
               )}
             />
           </div>
-          <Button className="w-1/4" type="submit">
+          <Button className="md:w-1/4" type="submit">
             Agregar producto
           </Button>
         </form>

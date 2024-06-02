@@ -1,10 +1,17 @@
 import { db } from "@/lib/db";
-import { SectoresClient } from "./components/cilent";
-import { SectoresColumn } from "./components/columns";
 import { format } from "date-fns";
 
-const SectoresPage = async () => {
-  const sectores = await db.section.findMany();
+import { SectoresClient } from "./components/cilent";
+import { SectoresColumn } from "./components/columns";
+
+const SectoresPage = async ({ params }: { params: { storeId: string } }) => {
+  const { storeId } = params;
+
+  const sectores = await db.section.findMany({
+    where: {
+      storeId,
+    },
+  });
 
   const sectoresFormat: SectoresColumn[] = sectores.map((item) => ({
     id: item.id,
