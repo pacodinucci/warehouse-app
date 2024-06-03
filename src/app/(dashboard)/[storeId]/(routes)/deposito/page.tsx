@@ -22,6 +22,7 @@ const DepositoPage = async ({ params }: { params: { storeId: string } }) => {
   const depositoFormat: DepositoColumn[] = depositos.map((item) => ({
     id: item.id,
     sku: item.Product.sku,
+    code: item.Product.code,
     brand: item.Product.brand,
     description: item.Product.description,
     quantity: item.quantity,

@@ -36,11 +36,11 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(`/api/${params.storeId}/warehouse/${data.id}`);
+      await axios.delete(`/api/stores/${params.storeId}/warehouse/${data.id}`);
       router.refresh();
-      toast.success("Producto eliminado del deposito");
+      toast.success("Registro eliminado del deposito");
     } catch (error) {
-      toast.error("Something went wrong while deleting this product.");
+      toast.error("No se pudo eliminar el registro.");
     } finally {
       setLoading(false);
       setOpen(false);

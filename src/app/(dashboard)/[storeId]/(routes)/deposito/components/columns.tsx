@@ -6,6 +6,7 @@ import { CellAction } from "./cell-action";
 export type DepositoColumn = {
   id: string;
   sku: string;
+  code: string;
   brand: string;
   section: string;
   quantity: number;
@@ -28,6 +29,14 @@ export const columns: ColumnDef<DepositoColumn>[] = [
   {
     accessorKey: "section",
     header: "Sección",
+  },
+  {
+    accessorKey: "sku",
+    header: "SKU",
+  },
+  {
+    accessorKey: "code",
+    header: "Código de barras",
   },
   {
     accessorKey: "createdAt",

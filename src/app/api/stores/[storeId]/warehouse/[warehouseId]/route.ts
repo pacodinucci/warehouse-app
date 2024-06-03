@@ -61,3 +61,32 @@ export async function PATCH(
     );
   }
 }
+
+export async function DELETE(
+  req: Request,
+  { params }: { params: { warehouseId: string } }
+) {
+  try {
+    const warehouseDeleted = await db.warehouse.delete({
+      where: {
+        id: params.warehouseId,
+      },
+    });
+
+    if (!warehouseDeleted) {
+      return new NextResponse("warehouse could not be deleted.", {
+        status: 400,
+      });
+    }
+
+    return new NextResponse(
+      JSON.stringify({
+        message: "El registro ha sido eliminado.",
+      }),
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error(error);
+    return new NextResponse("Internal server error", { status: 500 });
+  }
+}

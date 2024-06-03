@@ -36,3 +36,51 @@ export async function POST(req: Request) {
     return new NextResponse("Internal error", { status: 500 });
   }
 }
+
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const sectionId = searchParams.get("sectionId");
+
+  if (!sectionId) {
+    return new NextResponse("sectionId is required", { status: 400 });
+  }
+
+  try {
+    const section = await db.section.findFirst({
+      where: {
+        id: sectionId,
+      },
+    });
+
+    return NextResponse.json(section);
+  } catch (error) {
+    console.error("Error fetching section:", error);
+    return new NextResponse("Internal Server Error", { status: 500 });
+  }
+}
+
+export async function DELETE(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const sectionId = searchParams.get("sectionId");
+
+  if (!sectionId) {
+    return new NextResponse("sectionId is required", { status: 400 });
+  }
+
+  try {
+    const sectionDeleted = await db.section.delete({
+      where: {
+        id: sectionId,
+      },
+    });
+
+    if (!sectionDeleted) {
+      return new NextResponse("Section could not be deleted", { status: 400 });
+    }
+
+    return new NextResponse("Section deleted", { status: 200 });
+  } catch (error) {
+    console.error("Error deleting section", error);
+    return new NextResponse("Internal server error", { status: 500 });
+  }
+}

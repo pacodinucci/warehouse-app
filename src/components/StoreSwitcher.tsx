@@ -6,6 +6,7 @@ import {
   CheckIcon,
   ChevronsUpDown,
   PlusCircle,
+  Wrench,
   Store as StoreIcon,
 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
@@ -90,7 +91,7 @@ export default function StoreSwitcher({
           <ChevronsUpDown className="hidden md:block ml-auto h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-screen h-[82.5vh] md:min-h-0 md:w-[200px] md:h-auto p-2 md:p-0 mb-6 md:mb-0 rounded-none md:rounded-md shadow-none md:shadow-md">
+      <PopoverContent className="w-screen h-[88vh] md:min-h-0 md:w-[200px] md:h-auto p-2 md:p-0 pt-16 md:pt-0 mb-6 md:mb-0 rounded-none md:rounded-md shadow-none md:shadow-md">
         <Command>
           <CommandList>
             <CommandInput placeholder="Buscar depósito..." />
@@ -131,6 +132,17 @@ export default function StoreSwitcher({
             </CommandGroup>
           </CommandList>
         </Command>
+        <Button
+          variant="link"
+          className="md:hidden absolute bottom-0 left-0 w-full h-[20px] mb-12 flex gap-2 items-center text-2xl px-12 py-6"
+          onClick={() => {
+            router.push(`/${params.storeId}`);
+            setOpen(false);
+          }}
+        >
+          <Wrench />
+          Ir al dashboard
+        </Button>
       </PopoverContent>
     </Popover>
   );

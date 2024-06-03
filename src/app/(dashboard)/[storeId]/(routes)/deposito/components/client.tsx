@@ -62,7 +62,6 @@ export const DepositoClient: React.FC<DepositoClientProps> = ({ data }) => {
     quantity: number;
   }) => {
     console.log("Data confirmed:", data);
-    // Handle confirmed data here
     try {
       await axios.post(`/api/stores/${params.storeId}`, data);
       toast.success("Producto agregado al depósito con éxito.");
