@@ -227,6 +227,9 @@ export const RemoveProductFromStoreModal: React.FC<
                   audio={false}
                   ref={webcamRef}
                   screenshotFormat="image/jpeg"
+                  videoConstraints={{
+                    facingMode: { ideal: "environment" },
+                  }}
                 />
                 <div className="pt-6 pb-4 w-full flex justify-center">
                   <Button

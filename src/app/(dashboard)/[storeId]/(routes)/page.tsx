@@ -17,7 +17,7 @@ const DashboardPage: React.FC<DashboardPageProps> = async ({ params }) => {
   });
 
   return (
-    <div className="md:w-3/4 h-[90vh] md:h-full bg-white rounded-md">
+    <div className="md:w-3/4 h-[90vh] md:h-full bg-white rounded-md mb-12">
       <h1 className="text-2xl font-semibold text-neutral-800 py-6 px-4">
         {store?.name}
       </h1>

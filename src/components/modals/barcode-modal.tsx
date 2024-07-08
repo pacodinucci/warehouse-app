@@ -72,7 +72,7 @@ const BarcodeScannerModal: React.FC<BarcodeScannerModalProps> = ({
       } para escanear.`}
       isOpen={isOpen}
       onClose={onClose}
-      className="h-screen md:h-auto flex flex-col"
+      className="h-screen md:h-auto flex flex-col mt-6 md:mt-0"
     >
       <Separator />
       <div className="p-4">
@@ -80,6 +80,9 @@ const BarcodeScannerModal: React.FC<BarcodeScannerModalProps> = ({
           audio={false}
           ref={webcamRef}
           screenshotFormat="image/jpeg"
+          videoConstraints={{
+            facingMode: { ideal: "environment" },
+          }}
           width="100%"
         />
         <div className="mt-4">
