@@ -14,6 +14,7 @@ const ProductosPage = async () => {
     code: item.code,
     createdAt: format(item.createdAt, "MMMM do, yyyy"),
   }));
+
   return (
     <div className="w-screen md:w-3/4 h-auto md:h-[75%] min-h-screen md:min-h-0 bg-white md:rounded-md md:shadow-md mb-10">
       <ProductosClient data={productosFormat} />
